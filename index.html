@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slangify // Texting Acronym Academy</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc; /* Clean slate off-white */
+      color: #0f172a; /* Deep Slate 900 for high-contrast legibility */
+    }
+    h1, h2, h3, .heading-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    /* Pastel Soft Shadows & Borders */
+    .pastel-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.05), 0 8px 10px -6px rgba(99, 102, 241, 0.05);
+    }
+    .pastel-border-pink {
+      border-color: #fbcfe8; /* rose-200 */
+      box-shadow: 0 4px 20px rgba(244, 63, 94, 0.06);
+    }
+    .pastel-border-purple {
+      border-color: #e9d5ff; /* purple-200 */
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.06);
+    }
+
+    /* Smooth 3D Card Flip */
+    .perspective {
+      perspective: 1000px;
+    }
+    .card-inner {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .card-flipped {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Light WhatsApp specific background pattern */
+    .whatsapp-bg {
+      background-color: #efeae2; /* Authentic WhatsApp light mode background */
+      background-image: radial-gradient(#dfdcd6 1px, transparent 0.5px), radial-gradient(#dfdcd6 1px, #efeae2 0.5px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    @keyframes pulse-slow {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 4s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: float 3s infinite ease-in-out;
+    }
+
+    /* Particle Confetti styling */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: fall linear forwards;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(350px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden relative">
+
+  <!-- Celebration Confetti Overlay Canvas/Container -->
+  <div id="celebration-container" class="absolute inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="border-b border-slate-200/80 bg-white/90 backdrop-blur-md sticky top-0 z-40 px-4 py-3 sm:px-6 shadow-sm">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="changeTab('home')">
+        <div class="p-2.5 bg-gradient-to-tr from-rose-400 via-violet-400 to-indigo-400 rounded-2xl shadow-md shadow-indigo-100">
+          <i data-lucide="message-square-text" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-rose-500 via-violet-600 to-indigo-600 bg-clip-text text-transparent heading-font">SLANGIFY</span>
+          <span class="text-[10px] block text-slate-500 font-bold tracking-widest uppercase">The Top 10 Text Shortcuts</span>
+        </div>
+      </div>
+      
+      <!-- Nav Links -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+        <button onclick="changeTab('dashboard')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition duration-200 flex items-center gap-2 text-slate-600 hover:text-indigo-600 hover:bg-white">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-rose-400"></i> Explore
+        </button>
+        <button onclick="changeTab('flashcards')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition duration-200 flex items-center gap-2 text-slate-600 hover:text-indigo-600 hover:bg-white">
+          <i data-lucide="layers" class="w-4 h-4 text-violet-400"></i> Study Cards
+        </button>
+        <button onclick="changeTab('quiz')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition duration-200 flex items-center gap-2 text-slate-600 hover:text-indigo-600 hover:bg-white">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i> 5-Quest Quiz
+        </button>
+        <button onclick="changeTab('chat')" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition duration-200 flex items-center gap-2 text-slate-600 hover:text-indigo-600 hover:bg-white">
+          <i data-lucide="smartphone" class="w-4 h-4 text-sky-400"></i> Chat Simulator
+        </button>
+      </nav>
+
+      <!-- Streak Badge -->
+      <div class="flex items-center gap-2 bg-rose-50 border border-rose-100 py-1.5 px-3.5 rounded-full shadow-sm">
+        <span class="text-rose-500 animate-bounce"><i data-lucide="flame" class="w-5 h-5 fill-current"></i></span>
+        <span class="text-xs sm:text-sm font-bold text-rose-700"><span id="streak-count">1</span> Day Streak</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- TAB 1: HOME/WELCOME HERO -->
+    <section id="tab-home" class="tab-content block space-y-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4 md:pt-10">
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 bg-gradient-to-r from-rose-50 to-indigo-50 border border-indigo-100 px-3 py-1.5 rounded-full">
+            <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping"></span>
+            <span class="text-xs font-bold tracking-wider text-rose-600 uppercase">Interactive Teen Chat Academy</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-slate-900">
+            Stop Getting Left on <br class="hidden sm:inline">
+            <span class="bg-gradient-to-r from-rose-500 via-violet-500 to-indigo-500 bg-clip-text text-transparent">"Read"</span>. Decode Text Slang.
+          </h1>
+          <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Master the top <span class="text-rose-500 font-bold">10 most useful abbreviations</span> used by teens today. Practice with gorgeous active recall flashcards, simulated chats, and our rewarding 5-question trivia arena!
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <button onclick="changeTab('dashboard')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-rose-400 to-violet-500 hover:from-rose-500 hover:to-violet-600 text-white font-bold rounded-2xl shadow-lg shadow-violet-100 transform hover:-translate-y-0.5 active:translate-y-0 transition flex items-center justify-center gap-2 text-base">
+              Explore Top 10 <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+            <button onclick="changeTab('chat')" class="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-indigo-600 font-semibold rounded-2xl border border-indigo-100 transition flex items-center justify-center gap-2 text-base shadow-sm">
+              <i data-lucide="smartphone" class="w-5 h-5 text-sky-500"></i> Open Chat Sim
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-5 flex justify-center relative">
+          <!-- Decorative pastel glow elements -->
+          <div class="absolute w-72 h-72 rounded-full bg-purple-200/30 blur-3xl -top-10 -left-10 animate-pulse-slow"></div>
+          <div class="absolute w-72 h-72 rounded-full bg-rose-200/30 blur-3xl -bottom-10 -right-10 animate-pulse-slow"></div>
+          
+          <!-- Mockup Texting UI with beautiful light WhatsApp mode colors -->
+          <div class="w-full max-w-[320px] bg-[#efeae2] border-4 border-slate-200 rounded-[38px] shadow-xl overflow-hidden relative aspect-[9/18] flex flex-col justify-between animate-float">
+            <!-- Screen Notch / Dynamic Island -->
+            <div class="absolute top-0 inset-x-0 h-6 flex justify-center items-center">
+              <div class="w-24 h-4 bg-slate-950 rounded-b-xl border-x border-b border-purple-900/40"></div>
+            </div>
+            
+            <!-- WhatsApp Mock Header -->
+            <div class="pt-8 px-4 pb-3 border-b border-[#dfdcd6] bg-[#f0f2f5] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
+                  AI
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Alex (Bestie)</h4>
+                  <span class="text-[9px] text-[#25d366] font-bold">online</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 text-slate-500">
+                <i data-lucide="video" class="w-3.5 h-3.5"></i>
+                <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+              </div>
+            </div>
+
+            <!-- Fake Messages Area (Light WhatsApp theme) -->
+            <div class="flex-grow p-3 space-y-3 overflow-y-auto text-xs flex flex-col justify-end whatsapp-bg">
+              <div class="self-start max-w-[80%] bg-white text-slate-800 p-2.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-100">
+                OMG did you hear about the party? 🎉
+              </div>
+              <div class="self-end max-w-[80%] bg-[#d9fdd3] text-slate-800 p-2.5 rounded-2xl rounded-tr-none shadow-sm">
+                No! Tell me ASAP! ⚡️
+              </div>
+              <div class="self-start max-w-[80%] bg-white text-slate-800 p-2.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-100">
+                It starts at 8, OMW soon!
+              </div>
+              <div class="self-end max-w-[80%] bg-[#d9fdd3] text-slate-800 p-2.5 rounded-2xl rounded-tr-none shadow-sm">
+                TBH I'm so excited! Let's go!
+              </div>
+            </div>
+
+            <!-- Text Input Area -->
+            <div class="p-3 bg-[#f0f2f5] flex items-center gap-2">
+              <div class="flex-grow bg-white text-[11px] text-slate-400 px-3.5 py-2.5 rounded-full border border-slate-200">
+                Type slang response...
+              </div>
+              <button class="p-2.5 bg-[#00a884] rounded-full text-white shadow-md">
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Grid Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+        <div onclick="changeTab('flashcards')" class="p-6 bg-white border border-slate-200 hover:border-pink-300 rounded-3xl cursor-pointer group transition duration-300 transform hover:-translate-y-1 shadow-md shadow-indigo-100/40">
+          <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-pink-100 transition duration-300">
+            <i data-lucide="layers" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-pink-600 transition">Interactive Cards</h3>
+          <p class="text-slate-505 text-sm leading-relaxed">Swipe and flip active cards. Check simplified meanings alongside direct, real-life examples on the back.</p>
+        </div>
+        <div onclick="changeTab('quiz')" class="p-6 bg-white border border-slate-200 hover:border-amber-300 rounded-3xl cursor-pointer group transition duration-300 transform hover:-translate-y-1 shadow-md shadow-indigo-100/40">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-amber-100 transition duration-300">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-amber-600 transition">Gamified Quiz</h3>
+          <p class="text-slate-505 text-sm leading-relaxed">Test yourself with our custom 5-question mode, visual sparkles, second chances, and celebratory sound elements!</p>
+        </div>
+        <div onclick="changeTab('chat')" class="p-6 bg-white border border-slate-200 hover:border-indigo-300 rounded-3xl cursor-pointer group transition duration-300 transform hover:-translate-y-1 shadow-md shadow-indigo-100/40">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-100 transition duration-300">
+            <i data-lucide="smartphone" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-indigo-600 transition">Chat Simulators</h3>
+          <p class="text-slate-505 text-sm leading-relaxed">Roleplay inside authentic chat channels with simulated friends. Learn when and where to drop the right acronyms.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: EXPLORE / GLOSSARY -->
+    <section id="tab-dashboard" class="tab-content hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
+            <i data-lucide="layout-dashboard" class="text-rose-500"></i> Acronym Explorer
+          </h2>
+          <p class="text-slate-505 text-sm mt-1">Search, filter, and master the top 10 absolute most useful texting codes.</p>
+        </div>
+        
+        <!-- Quick stats -->
+        <div class="flex gap-3">
+          <div class="px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-center min-w-[100px] shadow-sm">
+            <span class="block text-2xl font-extrabold text-rose-500" id="stat-total">10</span>
+            <span class="text-[9px] text-slate-400 font-bold tracking-wider uppercase">Useful Acronyms</span>
+          </div>
+          <div class="px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-center min-w-[100px] shadow-sm">
+            <span class="block text-2xl font-extrabold text-violet-500">3</span>
+            <span class="text-[9px] text-slate-400 font-bold tracking-wider uppercase">Hot Categories</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="bg-white p-4 rounded-3xl border border-slate-250/60 flex flex-col md:flex-row gap-4 shadow-sm">
+        <div class="relative flex-grow">
+          <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+          <input type="text" id="search-input" oninput="filterAcronyms()" placeholder="Search acronym (e.g. OMG, NGL, TBH)..." class="w-full bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 rounded-2xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition">
+        </div>
+        
+        <!-- Category Pill Selection -->
+        <div class="flex flex-wrap items-center gap-2 overflow-x-auto whitespace-nowrap pb-1 md:pb-0">
+          <button onclick="setCategoryFilter('all')" class="category-pill active-pill px-4 py-2 rounded-xl text-xs font-semibold border transition duration-200" id="pill-all">
+            All
+          </button>
+          <button onclick="setCategoryFilter('basics')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition duration-200" id="pill-basics">
+            Everyday Basics
+          </button>
+          <button onclick="setCategoryFilter('emotions')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition duration-200" id="pill-emotions">
+            Reactions
+          </button>
+          <button onclick="setCategoryFilter('transitions')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition duration-200" id="pill-transitions">
+            Logistics
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid of Cards (Pastel Themed) -->
+      <div id="acronym-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Javascript renders these dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB 3: STUDY CARD DECK -->
+    <section id="tab-flashcards" class="tab-content hidden space-y-8">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-800 flex items-center justify-center gap-2">
+          <i data-lucide="layers" class="text-violet-500"></i> Slang Flashcard Lab
+        </h2>
+        <p class="text-slate-505 text-sm max-w-lg mx-auto">Click a card to flip and view the meaning. Simple example chats will help you learn quickly!</p>
+      </div>
+
+      <!-- Flashcard Interactive Arena -->
+      <div class="max-w-md mx-auto relative px-4">
+        <div class="perspective h-[340px] w-full cursor-pointer">
+          <!-- 3D Card Inner -->
+          <div id="flashcard" class="card-inner w-full h-full relative rounded-[2.5rem] shadow-2xl">
+            
+            <!-- CARD FRONT -->
+            <div onclick="flipFlashcard()" class="card-front absolute inset-0 bg-gradient-to-tr from-slate-900 via-indigo-950 to-purple-950 border-2 border-indigo-200/50 p-8 flex flex-col justify-between rounded-[2.5rem] overflow-hidden neon-border-pink">
+              <!-- Decorative Soft Glow Inside -->
+              <div class="absolute -top-16 -left-16 w-36 h-36 bg-pink-500/10 rounded-full blur-2xl"></div>
+              
+              <!-- Card Top Panel -->
+              <div class="flex justify-between items-center z-10">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100" id="card-tag">BASICS</span>
+                <span class="text-xs text-slate-400 font-bold" id="card-index">Card 1 of 10</span>
+              </div>
+              
+              <!-- Giant Acronym Display -->
+              <div class="text-center z-10 py-4">
+                <h3 class="text-6xl sm:text-7xl font-black tracking-tight bg-gradient-to-br from-slate-800 via-slate-600 to-indigo-700 bg-clip-text text-transparent heading-font uppercase" id="card-acronym">LOL</h3>
+              </div>
+              
+              <!-- Quick Interaction Hint -->
+              <div class="flex items-center justify-center gap-1.5 text-indigo-600 text-xs font-bold bg-white/80 py-2.5 px-4 rounded-xl border border-indigo-100 shadow-sm">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-indigo-500 animate-spin"></i>
+                <span>Tap Card to Reveal Meaning</span>
+              </div>
+            </div>
+
+            <!-- CARD BACK -->
+            <div class="card-back absolute inset-0 bg-white border-2 border-purple-200 p-6 flex flex-col justify-between rounded-[2.5rem] overflow-hidden shadow-lg">
+              <div class="absolute -bottom-16 -right-16 w-36 h-36 bg-purple-100/50 rounded-full blur-2xl"></div>
+              
+              <!-- Card Top -->
+              <div class="flex justify-between items-center" onclick="flipFlashcard()">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100" id="card-tag-back">BASICS</span>
+                <span class="text-xs text-slate-400 font-bold">Answer / Context</span>
+              </div>
+              
+              <!-- Main Definition Details -->
+              <div class="space-y-4 py-2 text-left" onclick="event.stopPropagation()">
+                <div onclick="flipFlashcard()">
+                  <span class="text-[10px] font-extrabold tracking-wider text-purple-500 uppercase">STANDS FOR</span>
+                  <h4 class="text-2xl font-extrabold text-slate-800 mt-0.5 leading-snug" id="card-stands">Laughing Out Loud</h4>
+                </div>
+                
+                <div onclick="flipFlashcard()">
+                  <span class="text-[10px] font-extrabold tracking-wider text-purple-500 uppercase">MEANING</span>
+                  <p class="text-slate-600 text-xs leading-relaxed mt-0.5" id="card-meaning">This word is used when you think something is very funny or nice.</p>
+                </div>
+
+                <!-- Simplified Label-Free Example Section -->
+                <div class="bg-purple-50/70 rounded-2xl p-3 border border-purple-100 shadow-sm">
+                  <p class="text-purple-700 text-xs italic leading-relaxed" id="card-example">"I fell down, but I am okay! LOL."</p>
+                </div>
+              </div>
+              
+              <!-- Return Hint -->
+              <div class="flex items-center justify-center gap-1.5 text-slate-400 text-xs font-medium bg-slate-50 py-1.5 rounded-lg border border-slate-100" onclick="flipFlashcard()">
+                <i data-lucide="eye" class="w-3.5 h-3.5 text-purple-500"></i>
+                <span>Tap again to view card front</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-between mt-8">
+          <button onclick="prevFlashcard()" class="p-3.5 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-800 rounded-2xl border border-slate-200 shadow-sm transition transform active:scale-95">
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+          </button>
+          
+          <div class="flex gap-2">
+            <button onclick="shuffleCards()" class="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 text-xs font-bold rounded-2xl border border-purple-100 shadow-sm flex items-center gap-1.5 transition">
+              <i data-lucide="shuffle" class="w-3.5 h-3.5 animate-spin text-purple-500"></i> Shuffle Deck
+            </button>
+          </div>
+
+          <button onclick="nextFlashcard()" class="p-3.5 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-800 rounded-2xl border border-slate-200 shadow-sm transition transform active:scale-95">
+            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: REINTRODUCED GAMIFIED QUIZ SHOW -->
+    <section id="tab-quiz" class="tab-content hidden max-w-2xl mx-auto space-y-6">
+      
+      <!-- Quiz Setup Screen -->
+      <div id="quiz-start-screen" class="bg-white rounded-[2.5rem] border border-slate-200 p-8 text-center space-y-6 shadow-lg">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-400 to-amber-400 text-white flex items-center justify-center mx-auto shadow-md">
+          <i data-lucide="sparkles" class="w-8 h-8"></i>
+        </div>
+        <div class="space-y-2">
+          <h2 class="text-3xl font-bold tracking-tight text-slate-800 heading-font">Slang Trivia Arena</h2>
+          <p class="text-slate-500 text-sm max-w-md mx-auto">Decode the shortcuts with our 5-question challenge! Beware: each incorrect answer immediately deducts a life, but you get a second chance!</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 max-w-xs mx-auto">
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+            <span class="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest">QUESTIONS</span>
+            <span class="text-lg font-bold text-slate-700">5 Ultimate</span>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+            <span class="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest">LIVES AVAILABLE</span>
+            <span class="text-lg font-bold text-red-500 flex justify-center items-center gap-1.5">3 <i data-lucide="heart" class="w-4 h-4 fill-current text-red-500"></i></span>
+          </div>
+        </div>
+
+        <button onclick="startQuiz()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-rose-400 to-amber-500 hover:from-rose-500 hover:to-amber-600 text-white font-bold rounded-2xl shadow-md transition transform active:scale-95 inline-flex items-center justify-center gap-2">
+          <i data-lucide="play" class="w-5 h-5 fill-current"></i> Start 5-Question Quiz
+        </button>
+      </div>
+
+      <!-- Quiz In-Game Board -->
+      <div id="quiz-active-screen" class="hidden bg-white rounded-[2.5rem] border border-slate-200 p-6 sm:p-8 space-y-6 relative overflow-hidden shadow-lg">
+        
+        <!-- Score Bar & Progress -->
+        <div class="flex items-center justify-between">
+          <div class="space-y-1">
+            <span class="text-[9px] uppercase font-bold tracking-widest text-slate-400 block">ARENA PROGRESS</span>
+            <span class="text-sm font-extrabold text-amber-500" id="quiz-progress-text">Question 1 of 5</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-1">
+              <!-- Hearts -->
+              <span id="quiz-hearts" class="flex gap-1 text-red-500">
+                <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+              </span>
+            </div>
+            <div class="bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100">
+              <span class="text-amber-600 text-xs font-black" id="quiz-score">Score: 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini Progress Bar -->
+        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+          <div id="quiz-progress-bar" class="bg-gradient-to-r from-rose-400 to-amber-400 h-full w-[20%] transition-all duration-350"></div>
+        </div>
+
+        <!-- Question Title Area -->
+        <div class="bg-gradient-to-br from-indigo-50/50 to-white border border-indigo-100 p-6 rounded-2xl relative overflow-hidden shadow-sm">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl"></div>
+          <span class="text-[10px] font-extrabold text-indigo-500 tracking-wider uppercase block mb-1" id="question-category">CATEGORY</span>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-800 leading-snug" id="question-text">Loading question content...</h3>
+        </div>
+
+        <!-- Multiple Choice Options -->
+        <div class="grid grid-cols-1 gap-3.5" id="quiz-options-container">
+          <!-- Dynamically populated choices -->
+        </div>
+
+        <!-- Instant Result Feedback Banner -->
+        <div id="quiz-feedback" class="hidden p-4 rounded-2xl flex items-center justify-between transition-all duration-300 shadow-sm border">
+          <div class="flex items-center gap-3">
+            <div id="feedback-icon" class="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm"></div>
+            <div>
+              <h4 class="text-sm font-bold" id="feedback-title">Correct!</h4>
+              <p class="text-xs opacity-90" id="feedback-body"></p>
+            </div>
+          </div>
+          <button id="quiz-continue-btn" onclick="nextQuizQuestion()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition whitespace-nowrap shadow-sm">
+            Continue <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Finished Screen -->
+      <div id="quiz-result-screen" class="hidden bg-white rounded-[2.5rem] border border-slate-200 p-8 text-center space-y-6 shadow-lg">
+        <div class="w-20 h-20 rounded-3xl bg-pink-50 text-pink-500 flex items-center justify-center mx-auto shadow-md">
+          <i data-lucide="trophy" class="w-10 h-10"></i>
+        </div>
+        
+        <div class="space-y-1">
+          <span class="text-[11px] font-extrabold text-pink-500 tracking-widest uppercase block">CHALLENGE COMPLETE</span>
+          <h2 class="text-3xl font-bold text-slate-800 heading-font" id="result-title">You are a Slang Master!</h2>
+          <p class="text-slate-505 text-sm max-w-sm mx-auto" id="result-description">Amazing job! You really know your texting shortcuts.</p>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto">
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+            <span class="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wider mb-1">SCORE</span>
+            <span class="text-2xl font-black text-indigo-500" id="result-score">500</span>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+            <span class="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wider mb-1">ACCURACY</span>
+            <span class="text-2xl font-black text-pink-500" id="result-accuracy">5/5</span>
+          </div>
+          <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center">
+            <span class="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wider mb-1">RANK</span>
+            <span class="text-base font-extrabold text-yellow-500 mt-1 block leading-tight" id="result-rank">Elite Messenger</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <button onclick="changeTab('quiz')" class="px-6 py-3 bg-gradient-to-r from-rose-400 to-purple-500 hover:from-rose-500 hover:to-purple-600 text-white font-bold rounded-2xl shadow-md transition transform active:scale-95">
+            Try Again
+          </button>
+          <button onclick="changeTab('chat')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl border border-slate-200 transition">
+            Practice in Chat Sim
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: CHAT SIMULATOR GAME -->
+    <section id="tab-chat" class="tab-content hidden max-w-lg mx-auto space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="text-2xl font-bold tracking-tight text-slate-800 flex items-center justify-center gap-2">
+          <i data-lucide="smartphone" class="text-pink-500"></i> Roleplay Chat Simulator
+        </h2>
+        <p class="text-slate-505 text-xs max-w-sm mx-auto">Select an adventure scenario and choose the correct texting acronym to communicate like a native pro!</p>
+      </div>
+
+      <!-- Scenario Chooser Screen -->
+      <div id="chat-setup-screen" class="bg-white rounded-[2rem] border border-slate-200 p-6 space-y-4 shadow-lg">
+        <h3 class="text-xs font-extrabold text-purple-600 tracking-wider uppercase mb-2">CHOOSE A SCENARIO:</h3>
+        
+        <div class="space-y-3">
+          <!-- Scenario 1 -->
+          <button onclick="startChatSimulation(0)" class="w-full text-left p-4 bg-slate-50 hover:bg-purple-50/50 border border-slate-200 hover:border-pink-500/30 rounded-2xl transition flex items-start gap-3.5 group">
+            <div class="p-2.5 bg-pink-100 text-pink-600 rounded-xl group-hover:scale-110 transition">
+              <i data-lucide="party-popper" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm group-hover:text-pink-600 transition">Planning the Weekend Party</h4>
+              <p class="text-xs text-slate-505 mt-1">Chat with Riley about organising a birthday gathering this Saturday.</p>
+            </div>
+          </button>
+
+          <!-- Scenario 2 -->
+          <button onclick="startChatSimulation(1)" class="w-full text-left p-4 bg-slate-50 hover:bg-purple-50/50 border border-slate-200 hover:border-purple-500/30 rounded-2xl transition flex items-start gap-3.5 group">
+            <div class="p-2.5 bg-purple-100 text-purple-600 rounded-xl group-hover:scale-110 transition">
+              <i data-lucide="frown" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm group-hover:text-purple-600 transition">Exaggerated Drama & News</h4>
+              <p class="text-xs text-slate-400 mt-1">Gossip with Harper about a funny performance plot twist.</p>
+            </div>
+          </button>
+
+          <!-- Scenario 3 -->
+          <button onclick="startChatSimulation(2)" class="w-full text-left p-4 bg-slate-50 hover:bg-purple-50/50 border border-slate-200 hover:border-[#818cf8] rounded-2xl transition flex items-start gap-3.5 group">
+            <div class="p-2.5 bg-indigo-100 text-indigo-600 rounded-xl group-hover:scale-110 transition">
+              <i data-lucide="briefcase" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition">School Projects & Deadlines</h4>
+              <p class="text-xs text-slate-400 mt-1">Coordinate group presentation slides with classmate Jordan.</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Chat Game Interface (Highly attractive light WhatsApp mode) -->
+      <div id="chat-interface-screen" class="hidden bg-[#efeae2] border border-slate-250 rounded-[2.2rem] h-[550px] flex flex-col justify-between relative shadow-xl overflow-hidden">
+        
+        <!-- Live WhatsApp Header (Clean and light) -->
+        <div class="p-4 border-b border-[#dfdcd6] bg-[#f0f2f5] flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3">
+            <button onclick="exitChatSim()" class="text-slate-600 hover:text-slate-800 mr-1 block">
+              <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-300 to-indigo-300 flex items-center justify-center text-white font-black text-sm shadow-sm" id="chat-avatar">
+              R
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800" id="chat-partner-name">Riley</h4>
+              <span class="text-[11px] text-[#25d366] font-bold flex items-center gap-1">
+                online
+              </span>
+            </div>
+          </div>
+          
+          <!-- WhatsApp Call Icons -->
+          <div class="flex items-center gap-4 text-slate-500">
+            <button class="hover:text-slate-800"><i data-lucide="video" class="w-4.5 h-4.5"></i></button>
+            <button class="hover:text-slate-800"><i data-lucide="phone" class="w-4.5 h-4.5"></i></button>
+            <button class="hover:text-slate-800"><i data-lucide="more-vertical" class="w-4.5 h-4.5"></i></button>
+          </div>
+        </div>
+
+        <!-- Chat Bubble Log Scroll Area with WhatsApp light backdrop -->
+        <div id="chat-log" class="flex-grow p-4 space-y-4 overflow-y-auto flex flex-col whatsapp-bg">
+          <!-- Messages feed added here dynamically -->
+        </div>
+
+        <!-- Bottom Dialogue Controls -->
+        <div class="p-4 border-t border-[#dfdcd6] bg-[#f0f2f5] space-y-3">
+          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center" id="chat-option-banner">
+            CHOOSE YOUR TEXT RESPONSE:
+          </div>
+          
+          <!-- Interactive options -->
+          <div class="grid grid-cols-1 gap-2.5" id="chat-options-box">
+            <!-- Dynamic button prompt lists -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Info Banner -->
+  <footer class="border-t border-slate-200 bg-white py-6 px-4">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-slate-500 text-xs">
+        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500 animate-pulse"></i>
+        <span>Designed for high-impact youth texting literacy & language acquisition.</span>
+      </div>
+      <p class="text-[10px] text-slate-400 font-bold tracking-widest uppercase">
+        © 2026 Slangify - Interactive Learning Laboratory.
+      </p>
+    </div>
+  </footer>
+
+  <!-- DYNAMIC SOUND SYNTHESIZER AND CELEBRATION CHIMES -->
+  <script>
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    let audioCtxInstance = null;
+
+    // Trigger local audio sound chimes
+    function playSynthTone(frequency, type, duration, delay = 0, gainVolume = 0.08) {
+      try {
+        if (!audioCtxInstance) {
+          audioCtxInstance = new AudioContextClass();
+        }
+        if (audioCtxInstance.state === 'suspended') {
+          audioCtxInstance.resume();
+        }
+
+        const oscillator = audioCtxInstance.createOscillator();
+        const gainNode = audioCtxInstance.createGain();
+
+        oscillator.type = type; // 'sine', 'square', 'sawtooth', 'triangle'
+        oscillator.frequency.setValueAtTime(frequency, audioCtxInstance.currentTime + delay);
+
+        gainNode.gain.setValueAtTime(gainVolume, audioCtxInstance.currentTime + delay);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtxInstance.currentTime + delay + duration);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtxInstance.destination);
+
+        oscillator.start(audioCtxInstance.currentTime + delay);
+        oscillator.stop(audioCtxInstance.currentTime + delay + duration);
+      } catch (err) {
+        console.warn("Web Audio API not supported or blocked in this browser sandbox context.", err);
+      }
+    }
+
+    // TRIGGER CELEBRATION SOUNDS: A beautiful, sparkling major chord sequence
+    function playCelebrationSoundSequence() {
+      // Sparkling arpeggio chime series
+      const delayScale = 0.08;
+      const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51]; // C5, D5, E5, G5, A5, C6, D6, E6
+      
+      notes.forEach((freq, idx) => {
+        // Overlay a soft crystalline sine wave and a warm triangle wave
+        playSynthTone(freq, 'sine', 0.4, idx * delayScale, 0.06);
+        playSynthTone(freq, 'triangle', 0.3, idx * delayScale + 0.02, 0.03);
+      });
+    }
+
+    // Trigger visual confetti particles
+    function triggerVisualConfetti() {
+      const container = document.getElementById('celebration-container');
+      const colors = ['#ec4899', '#a855f7', '#6366f1', '#3b82f6', '#10b981', '#f59e0b'];
+      
+      // Spawn 35 colorful falling particles
+      for (let i = 0; i < 35; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        
+        const size = Math.random() * 8 + 6;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left = Math.random() * window.innerWidth;
+        const top = Math.random() * 100;
+        const duration = Math.random() * 1.5 + 1.2;
+        
+        p.style.width = `${size}px`;
+        p.style.height = `${size}px`;
+        p.style.backgroundColor = color;
+        p.style.left = `${left}px`;
+        p.style.top = `${top}px`;
+        p.style.animationDuration = `${duration}s`;
+        
+        // Random horizontal sway
+        p.style.transform = `translateX(${Math.random() * 100 - 50}px)`;
+        
+        container.appendChild(p);
+        
+        // Remove from DOM after falling animation finishes
+        setTimeout(() => p.remove(), duration * 1000);
+      }
+    }
+
+    // Complete Audio-Visual Celebration Trigger
+    function runAnswerCorrectCelebration(acronymWord) {
+      // 1. Play beautiful major arpeggio chords
+      playCelebrationSoundSequence();
+      
+      // 2. Spawn beautiful falling neon confetti particles
+      triggerVisualConfetti();
+    }
+
+    function playTryAgainSound() {
+      // Soft cautious buzzer pattern
+      playSynthTone(293.66, 'sine', 0.15, 0); // D4
+      playSynthTone(220.00, 'sine', 0.25, 0.1, 0.1); // A3
+    }
+
+    // Play disappointment buzzer
+    function playFinalWrongSound() {
+      playSynthTone(170.00, 'sawtooth', 0.2, 0, 0.12);
+      playSynthTone(110.00, 'sawtooth', 0.45, 0.12, 0.12);
+    }
+  </script>
+
+  <!-- ELITE TOP 10 ACRONYM DATASET SCRIPT -->
+  <script>
+    // Exactly 10 of the most useful, high-impact acronyms for texting communication
+    const acronymsDataset = [
+      {
+        acronym: "LOL",
+        stands: "Laughing Out Loud",
+        category: "basics",
+        tag: "Basics",
+        meaning: "This word is used when you think something is very funny or nice.",
+        example: "I fell down, but I am okay! LOL."
+      },
+      {
+        acronym: "BRB",
+        stands: "Be Right Back",
+        category: "basics",
+        tag: "Basics",
+        meaning: "This tells the other person that you are going away for a short time but will return soon.",
+        example: "My mom is calling me, brb!"
+      },
+      {
+        acronym: "BTW",
+        stands: "By The Way",
+        category: "basics",
+        tag: "Basics",
+        meaning: "Use this to add a new point or ask a new question in the conversation.",
+        example: "BTW, do you have a pencil?"
+      },
+      {
+        acronym: "IDK",
+        stands: "I Don't Know",
+        category: "basics",
+        tag: "Basics",
+        meaning: "Use this when you do not have the answer to a question.",
+        example: "IDK where my schoolbag is."
+      },
+      {
+        acronym: "TBH",
+        stands: "To Be Honest",
+        category: "basics",
+        tag: "Basics",
+        meaning: "Use this to say what you truly think, even if others do not agree.",
+        example: "TBH, I do not like tomatoes on my pizza."
+      },
+      {
+        acronym: "OMG",
+        stands: "Oh My God / Oh My Gosh",
+        category: "emotions",
+        tag: "Reactions",
+        meaning: "Use this to show that you are very surprised, excited, or shocked.",
+        example: "OMG, look at that super cute puppy over there!"
+      },
+      {
+        acronym: "JK",
+        stands: "Just Kidding",
+        category: "emotions",
+        tag: "Reactions",
+        meaning: "Use this to show that your last sentence was only a joke, not serious.",
+        example: "I am 100 years old! JK, I am only 14."
+      },
+      {
+        acronym: "NGL",
+        stands: "Not Gonna Lie",
+        category: "emotions",
+        tag: "Reactions",
+        meaning: "This is used when you want to share a true, direct, or difficult feeling.",
+        example: "NGL, I am really scared of the dark."
+      },
+      {
+        acronym: "OMW",
+        stands: "On My Way",
+        category: "transitions",
+        tag: "Logistics",
+        meaning: "This means you are traveling or walking to meet someone right now.",
+        example: "I am walking to your house right now, OMW!"
+      },
+      {
+        acronym: "ASAP",
+        stands: "As Soon As Possible",
+        category: "transitions",
+        tag: "Logistics",
+        meaning: "This means you need something done very quickly with no delay.",
+        example: "Please call me back ASAP."
+      }
+    ];
+
+    // Initialize elements on load
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      populateExploreGrid();
+      initializeFlashcards();
+    });
+  </script>
+
+  <!-- NAVIGATION & NAVIGATION ROUTING SCRIPT -->
+  <script>
+    function changeTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(element => {
+        element.classList.add('hidden');
+        element.classList.remove('block');
+      });
+
+      // Show requested tab
+      const selectedTab = document.getElementById(`tab-${tabId}`);
+      if (selectedTab) {
+        selectedTab.classList.remove('hidden');
+        selectedTab.classList.add('block');
+      }
+
+      // Update Navigation styling classes active states
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('onclick').includes(tabId)) {
+          btn.classList.add('bg-pink-500/10', 'text-pink-600', 'border', 'border-pink-100');
+          btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        } else {
+          btn.classList.remove('bg-pink-500/10', 'text-pink-600', 'border', 'border-pink-100');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+        }
+      });
+    }
+  </script>
+
+  <!-- EXPLORE / GLOSSARY ENGINE -->
+  <script>
+    let activeCategoryFilter = 'all';
+
+    function populateExploreGrid() {
+      const grid = document.getElementById('acronym-grid');
+      const searchInput = document.getElementById('search-input');
+      const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      
+      // Filter list
+      const filtered = acronymsDataset.filter(item => {
+        const matchesCategory = (activeCategoryFilter === 'all' || item.category === activeCategoryFilter);
+        const matchesSearch = (
+          item.acronym.toLowerCase().includes(searchVal) ||
+          item.stands.toLowerCase().includes(searchVal) ||
+          item.meaning.toLowerCase().includes(searchVal)
+        );
+        return matchesCategory && matchesSearch;
+      });
+
+      // Safely update total counter
+      const statTotalEl = document.getElementById('stat-total');
+      if (statTotalEl) {
+        statTotalEl.innerText = filtered.length;
+      }
+
+      // Reset grid
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center space-y-3 bg-white rounded-[2rem] border border-slate-200">
+            <div class="w-12 h-12 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
+              <i data-lucide="search" class="w-6 h-6"></i>
+            </div>
+            <p class="text-slate-400 text-sm">No texting acronyms found matching those filters.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      // Add Cards (Pastel colored theme)
+      filtered.forEach(item => {
+        let cardColorClass = "indigo";
+        let bgClass = "bg-indigo-50/50";
+        let textClass = "text-indigo-600";
+        let borderClass = "border-indigo-100";
+        
+        if (item.category === 'basics') {
+          cardColorClass = "indigo";
+          bgClass = "bg-indigo-50/50";
+          textClass = "text-indigo-600";
+          borderClass = "border-indigo-100";
+        }
+        if (item.category === 'emotions') {
+          cardColorClass = "rose";
+          bgClass = "bg-rose-50/50";
+          textClass = "text-rose-600";
+          borderClass = "border-rose-100";
+        }
+        if (item.category === 'transitions') {
+          cardColorClass = "cyan";
+          bgClass = "bg-sky-50/50";
+          textClass = "text-sky-600";
+          borderClass = "border-sky-100";
+        }
+
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 p-6 rounded-3xl hover:border-indigo-300 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4 relative group overflow-hidden";
+        card.innerHTML = `
+          <div class="space-y-2 relative z-10">
+            <div class="flex justify-between items-start">
+              <span class="text-2xl font-black heading-font text-slate-800 tracking-tight uppercase group-hover:text-indigo-600 transition">${item.acronym}</span>
+              <span class="text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full ${bgClass} ${textClass} border ${borderClass}">
+                ${item.tag}
+              </span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-700">${item.stands}</h4>
+            <p class="text-xs text-slate-505 leading-relaxed">${item.meaning}</p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 relative z-10">
+            <p class="text-xs text-slate-400 italic leading-relaxed">"${item.example}"</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function setCategoryFilter(category) {
+      activeCategoryFilter = category;
+      
+      // Update pills styles
+      document.querySelectorAll('.category-pill').forEach(pill => {
+        if (pill.id === `pill-${category}`) {
+          pill.classList.add('bg-pink-500/10', 'text-pink-600', 'border-pink-200');
+          pill.classList.remove('border-slate-200', 'text-slate-500', 'hover:text-slate-800');
+        } else {
+          pill.classList.remove('bg-pink-500/10', 'text-pink-600', 'border-pink-200');
+          pill.classList.add('border-slate-200', 'text-slate-500', 'hover:text-slate-800');
+        }
+      });
+
+      populateExploreGrid();
+    }
+
+    function filterAcronyms() {
+      populateExploreGrid();
+    }
+  </script>
+
+  <!-- FLASHCARD ENGINE SCRIPT -->
+  <script>
+    let flashcardDeck = [...acronymsDataset];
+    let currentCardIndex = 0;
+    let cardFlipped = false;
+
+    function initializeFlashcards() {
+      updateFlashcardUI();
+    }
+
+    // Shuffle active card deck
+    function shuffleCards() {
+      flashcardDeck = [...acronymsDataset].sort(() => Math.random() - 0.5);
+      currentCardIndex = 0;
+      cardFlipped = false;
+      const cardEl = document.getElementById('flashcard');
+      if (cardEl) {
+        cardEl.classList.remove('card-flipped');
+      }
+      setTimeout(updateFlashcardUI, 150);
+    }
+
+    function flipFlashcard() {
+      const cardEl = document.getElementById('flashcard');
+      if (!cardEl) return;
+      cardFlipped = !cardFlipped;
+      if (cardFlipped) {
+        cardEl.classList.add('card-flipped');
+      } else {
+        cardEl.classList.remove('card-flipped');
+      }
+    }
+
+    function nextFlashcard() {
+      cardFlipped = false;
+      const cardEl = document.getElementById('flashcard');
+      if (cardEl) {
+        cardEl.classList.remove('card-flipped');
+      }
+      
+      setTimeout(() => {
+        currentCardIndex = (currentCardIndex + 1) % flashcardDeck.length;
+        updateFlashcardUI();
+      }, 150);
+    }
+
+    function prevFlashcard() {
+      cardFlipped = false;
+      const cardEl = document.getElementById('flashcard');
+      if (cardEl) {
+        cardEl.classList.remove('card-flipped');
+      }
+      
+      setTimeout(() => {
+        currentCardIndex = (currentCardIndex - 1 + flashcardDeck.length) % flashcardDeck.length;
+        updateFlashcardUI();
+      }, 150);
+    }
+
+    function updateFlashcardUI() {
+      const data = flashcardDeck[currentCardIndex];
+      
+      const cardIdxEl = document.getElementById('card-index');
+      const cardTagEl = document.getElementById('card-tag');
+      const cardTagBackEl = document.getElementById('card-tag-back');
+      const cardAcronymEl = document.getElementById('card-acronym');
+      const cardStandsEl = document.getElementById('card-stands');
+      const cardMeaningEl = document.getElementById('card-meaning');
+      const cardExampleEl = document.getElementById('card-example');
+
+      if (cardIdxEl) cardIdxEl.innerText = `Card ${currentCardIndex + 1} of ${flashcardDeck.length}`;
+      if (cardTagEl) cardTagEl.innerText = data.tag;
+      if (cardTagBackEl) cardTagBackEl.innerText = data.tag;
+      if (cardAcronymEl) cardAcronymEl.innerText = data.acronym;
+      
+      if (cardStandsEl) cardStandsEl.innerText = data.stands;
+      if (cardMeaningEl) cardMeaningEl.innerText = data.meaning;
+      if (cardExampleEl) cardExampleEl.innerText = data.example;
+    }
+  </script>
+
+  <!-- GAMIFIED 5-QUESTION QUIZ ENGINE SCRIPT (WITH SECONDS CHANCE advanced follow-up fix) -->
+  <script>
+    let quizQuestionsList = [];
+    let activeQuestionIndex = 0;
+    let quizUserScore = 0;
+    let livesRemaining = 3;
+    let answerPickedThisQuestion = false;
+    let hasAttemptedThisQuestionOnce = false;
+
+    function startQuiz() {
+      document.getElementById('quiz-start-screen').classList.add('hidden');
+      document.getElementById('quiz-result-screen').classList.add('hidden');
+      document.getElementById('quiz-active-screen').classList.remove('hidden');
+      
+      livesRemaining = 3;
+      quizUserScore = 0;
+      activeQuestionIndex = 0;
+      quizComplete = false;
+      hasAttemptedThisQuestionOnce = false;
+
+      quizQuestionsList = generateQuizQuestions();
+      loadQuizQuestion();
+    }
+
+    function generateQuizQuestions() {
+      const shuffled = [...acronymsDataset].sort(() => Math.random() - 0.5);
+      
+      // Select exactly 5 questions for high-yield quick plays
+      const selected = shuffled.slice(0, 5);
+      
+      return selected.map((acronymObj, i) => {
+        const questionType = Math.random() > 0.5 ? 'stands' : 'example';
+        let questionText = "";
+        let correctAnswer = "";
+        let wrongOptions = [];
+
+        if (questionType === 'stands') {
+          questionText = `What does the abbreviation "${acronymObj.acronym}" stand for?`;
+          correctAnswer = acronymObj.stands;
+          
+          wrongOptions = acronymsDataset
+            .filter(item => item.acronym !== acronymObj.acronym)
+            .map(item => item.stands)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
+        } else {
+          // Fill-in-the-blank question
+          const scrambledExample = acronymObj.example.replace(new RegExp(acronymObj.acronym, "gi"), "____");
+          questionText = `Which text acronym fits best in this sentence: "${scrambledExample}"`;
+          correctAnswer = acronymObj.acronym;
+
+          wrongOptions = acronymsDataset
+            .filter(item => item.acronym !== acronymObj.acronym)
+            .map(item => item.acronym)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
+        }
+
+        const finalOptions = [...wrongOptions, correctAnswer].sort(() => Math.random() - 0.5);
+
+        return {
+          acronym: acronymObj.acronym,
+          stands: acronymObj.stands,
+          category: acronymObj.category,
+          tag: acronymObj.tag,
+          example: acronymObj.example,
+          questionText: questionText,
+          correctChoice: correctAnswer,
+          allOptions: finalOptions,
+          explanation: `"${acronymObj.acronym}" stands for "${acronymObj.stands}". Example: "${acronymObj.example}"`
+        };
+      });
+    }
+
+    function loadQuizQuestion() {
+      answerPickedThisQuestion = false;
+      hasAttemptedThisQuestionOnce = false;
+      
+      updateHeartsDisplay();
+
+      const fb = document.getElementById('quiz-feedback');
+      if (fb) fb.classList.add('hidden');
+      
+      const qData = quizQuestionsList[activeQuestionIndex];
+
+      document.getElementById('quiz-progress-text').innerText = `Question ${activeQuestionIndex + 1} of 5`;
+      document.getElementById('question-category').innerText = qData.tag;
+      document.getElementById('question-text').innerText = qData.questionText;
+      document.getElementById('quiz-score').innerText = `Score: ${quizUserScore}`;
+
+      const percent = ((activeQuestionIndex + 1) / 5) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = "";
+
+      qData.allOptions.forEach((optionText, idx) => {
+        const optionBtn = document.createElement('button');
+        optionBtn.id = `quiz-option-${idx}`;
+        optionBtn.onclick = () => selectQuizOption(optionText, optionBtn);
+        optionBtn.className = "quiz-opt-btn w-full text-left p-4 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-pink-300 rounded-2xl transition duration-200 flex items-center gap-3 group text-sm shadow-sm";
+        optionBtn.innerHTML = `
+          <div class="num-box w-7 h-7 rounded-lg bg-slate-200 text-slate-505 group-hover:bg-pink-500 group-hover:text-white flex items-center justify-center font-bold text-xs shrink-0 transition shadow-sm">
+            ${String.fromCharCode(65 + idx)}
+          </div>
+          <span class="font-medium text-slate-700 leading-snug">${optionText}</span>
+        `;
+        container.appendChild(optionBtn);
+      });
+      lucide.createIcons();
+    }
+
+    function updateHeartsDisplay() {
+      const heartsContainer = document.getElementById('quiz-hearts');
+      if (!heartsContainer) return;
+      heartsContainer.innerHTML = "";
+      for (let i = 0; i < 3; i++) {
+        if (i < livesRemaining) {
+          heartsContainer.innerHTML += `<i data-lucide="heart" class="w-5 h-5 fill-current text-rose-500 animate-pulse"></i>`;
+        } else {
+          heartsContainer.innerHTML += `<i data-lucide="heart" class="w-5 h-5 text-slate-300"></i>`;
+        }
+      }
+      lucide.createIcons();
+    }
+
+    function selectQuizOption(selectedVal, clickedBtnElement) {
+      if (answerPickedThisQuestion) return;
+
+      const qData = quizQuestionsList[activeQuestionIndex];
+      const fb = document.getElementById('quiz-feedback');
+      const fbIcon = document.getElementById('feedback-icon');
+      const fbTitle = document.getElementById('feedback-title');
+      const fbBody = document.getElementById('feedback-body');
+      const continueBtn = document.getElementById('quiz-continue-btn');
+
+      // CASE A: CORRECT SELECTION -> TRIGGER CELEBRATION CHIMES AND CONFETTI
+      if (selectedVal === qData.correctChoice) {
+        answerPickedThisQuestion = true;
+        
+        if (!hasAttemptedThisQuestionOnce) {
+          quizUserScore += 200; // 200 pts per correct answer (total 1000 max)
+        } else {
+          quizUserScore += 100; // 100 points for getting it on second try
+        }
+        
+        document.getElementById('quiz-score').innerText = `Score: ${quizUserScore}`;
+        
+        clickedBtnElement.classList.add('border-emerald-400', 'bg-emerald-50/50');
+        const numBox = clickedBtnElement.querySelector('.num-box');
+        if (numBox) {
+          numBox.classList.add('bg-emerald-500', 'text-white');
+        }
+
+        // Trigger major-chord audio synthesis sequence & sparkling neon particles
+        runAnswerCorrectCelebration(qData.acronym);
+
+        fb.className = "flex items-center justify-between p-4 rounded-2xl bg-emerald-50 border border-emerald-200";
+        fbIcon.className = "w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm";
+        fbIcon.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i>`;
+        fbTitle.className = "text-sm font-extrabold text-emerald-600";
+        fbTitle.innerText = hasAttemptedThisQuestionOnce ? "Correct on Second Try! (+100 pts)" : "Awesome! Correct Answer (+200 pts)";
+        fbBody.innerText = qData.explanation;
+        fb.classList.remove('hidden');
+        continueBtn.classList.remove('hidden'); // Fix: ensure continue button is unhidden so they can progress to next
+        continueBtn.innerText = "Continue";
+        
+        lucide.createIcons();
+        return;
+      }
+
+      // CASE B: INCORRECT SELECTION (Instant life deduction + Try Again opportunity)
+      if (selectedVal !== qData.correctChoice) {
+        livesRemaining--;
+        updateHeartsDisplay();
+
+        if (livesRemaining <= 0) {
+          // Locked - No lives remaining
+          answerPickedThisQuestion = true;
+          
+          clickedBtnElement.classList.add('border-rose-400', 'bg-rose-50/50');
+          const numBox = clickedBtnElement.querySelector('.num-box');
+          if (numBox) {
+            numBox.classList.add('bg-rose-500', 'text-white');
+          }
+
+          document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+            const textSpan = btn.querySelector('span').innerText;
+            if (textSpan === qData.correctChoice) {
+              btn.classList.add('border-emerald-400', 'bg-emerald-505/10');
+              const innerNumBox = btn.querySelector('.num-box');
+              if (innerNumBox) innerNumBox.classList.add('bg-emerald-500', 'text-white');
+            }
+          });
+
+          playFinalWrongSound();
+
+          fb.className = "flex items-center justify-between p-4 rounded-2xl bg-rose-50 border border-rose-200";
+          fbIcon.className = "w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-md";
+          fbIcon.innerHTML = `<i data-lucide="skull" class="w-4 h-4"></i>`;
+          fbTitle.className = "text-sm font-bold text-rose-505";
+          fbTitle.innerText = "No Lives Remaining!";
+          fbBody.innerText = qData.explanation;
+          
+          fb.classList.remove('hidden');
+          continueBtn.classList.remove('hidden'); 
+          continueBtn.innerText = "View Final Results";
+          
+          lucide.createIcons();
+          return;
+        }
+
+        if (!hasAttemptedThisQuestionOnce) {
+          // Strike 1: Give a second opportunity to try again on the current question
+          hasAttemptedThisQuestionOnce = true;
+          
+          clickedBtnElement.classList.add('border-rose-300', 'bg-rose-500/5', 'opacity-50', 'pointer-events-none');
+          const numBox = clickedBtnElement.querySelector('.num-box');
+          if (numBox) {
+            numBox.classList.add('bg-rose-400', 'text-white');
+          }
+
+          playTryAgainSound();
+
+          fb.className = "flex items-center justify-between p-4 rounded-2xl bg-amber-50 border border-amber-200 animate-shake";
+          fbIcon.className = "w-8 h-8 rounded-full bg-amber-400 text-white flex items-center justify-center shrink-0 shadow-sm";
+          fbIcon.innerHTML = `<i data-lucide="help-circle" class="w-4 h-4"></i>`;
+          fbTitle.className = "text-sm font-bold text-amber-600";
+          fbTitle.innerText = "Not Quite! Life Deducted. Second Chance!";
+          fbBody.innerText = "You lost 1 life, but you still have one last attempt to guess this question correctly.";
+          fb.classList.remove('hidden');
+          continueBtn.classList.add('hidden'); // Force them to pick another option
+          
+          lucide.createIcons();
+        } 
+        else {
+          // Strike 2: Second attempt incorrect as well -> Lock & reveal correct choice
+          answerPickedThisQuestion = true;
+
+          clickedBtnElement.classList.add('border-rose-400', 'bg-rose-50/50');
+          const numBox = clickedBtnElement.querySelector('.num-box');
+          if (numBox) {
+            numBox.classList.add('bg-rose-500', 'text-white');
+          }
+
+          document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+            const textSpan = btn.querySelector('span').innerText;
+            if (textSpan === qData.correctChoice) {
+              btn.classList.add('border-emerald-400', 'bg-emerald-500/10');
+              const innerNumBox = btn.querySelector('.num-box');
+              if (innerNumBox) innerNumBox.classList.add('bg-emerald-500', 'text-white');
+            }
+          });
+
+          playFinalWrongSound();
+
+          fb.className = "flex items-center justify-between p-4 rounded-2xl bg-rose-50 border border-rose-200";
+          fbIcon.className = "w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-sm";
+          fbIcon.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i>`;
+          fbTitle.className = "text-sm font-bold text-rose-505";
+          fbTitle.innerText = "Incorrect Again! Life Deducted.";
+          fbBody.innerText = qData.explanation;
+          
+          fb.classList.remove('hidden');
+          continueBtn.classList.remove('hidden'); // Allow them to move on to next question
+          continueBtn.innerText = "Next Question";
+          
+          lucide.createIcons();
+        }
+      }
+    }
+
+    function nextQuizQuestion() {
+      if (livesRemaining <= 0) {
+        endQuizShow();
+        return;
+      }
+
+      activeQuestionIndex++;
+      if (activeQuestionIndex >= 5) {
+        endQuizShow();
+      } else {
+        loadQuizQuestion();
+      }
+    }
+
+    function endQuizShow() {
+      document.getElementById('quiz-active-screen').classList.add('hidden');
+      document.getElementById('quiz-result-screen').classList.remove('hidden');
+
+      document.getElementById('result-score').innerText = quizUserScore;
+      const countCorrect = Math.min(5, Math.floor(quizUserScore / 200));
+      document.getElementById('result-accuracy').innerText = `${countCorrect}/5`;
+
+      const medalBox = document.getElementById('result-medal-box');
+      const rTitle = document.getElementById('result-title');
+      const rDesc = document.getElementById('result-description');
+      const rRank = document.getElementById('result-rank');
+
+      if (quizUserScore >= 800) {
+        medalBox.className = "w-20 h-20 rounded-3xl bg-yellow-50 text-yellow-500 flex items-center justify-center mx-auto shadow-md border border-yellow-100";
+        rTitle.innerText = "Absolute Slang Legend!";
+        rDesc.innerText = "Outstanding! You got nearly everything correct and handled our strict 5-question mode perfectly.";
+        rRank.innerText = "Elite King 👑";
+        runAnswerCorrectCelebration("LEGENDARY STATUS");
+      } else if (quizUserScore >= 450) {
+        medalBox.className = "w-20 h-20 rounded-3xl bg-purple-50 text-purple-500 flex items-center justify-center mx-auto shadow-md border border-purple-100";
+        rTitle.innerText = "Great Job!";
+        rDesc.innerText = "Solid effort. You understand the shortcuts and know how to text quickly.";
+        rRank.innerText = "Texter Pro 📱";
+      } else {
+        medalBox.className = "w-20 h-20 rounded-3xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto border border-slate-200 shadow-sm";
+        rTitle.innerText = "Keep Practicing!";
+        rDesc.innerText = "No worries. Study the active flashcards first to improve your score next time.";
+        rRank.innerText = "Beginner 💬";
+      }
+    }
+  </script>
+
+  <!-- CHAT SIMULATOR ENGINE SCRIPT -->
+  <script>
+    const chatScenarios = [
+      {
+        partner: "Riley",
+        avatar: "RL",
+        startMessage: "Hey! Are you excited for the weekend campfire party on Saturday? 🏕️",
+        steps: [
+          {
+            friendMessage: "Wait, do we even know where it is? Tyler said the location wasn't finalized yet.",
+            options: [
+              {
+                text: "Yeah, location is TBD right now. Hope he texts soon!",
+                isCorrect: true,
+                acronym: "TBD",
+                category: "transitions",
+                feedback: "Spot on! 'TBD' means 'To Be Determined', perfect for unfinished plans."
+              },
+              {
+                text: "Oh, it's ASAP right now.",
+                isCorrect: false,
+                feedback: "Incorrect. 'ASAP' stands for 'As Soon As Possible'."
+              }
+            ]
+          },
+          {
+            friendMessage: "True. Let me know when you leave so we can arrive together.",
+            options: [
+              {
+                text: "Will do! I'll text you when I am OMW with my brother.",
+                isCorrect: true,
+                acronym: "OMW",
+                category: "transitions",
+                feedback: "Great work! 'OMW' stands for 'On My Way'."
+              },
+              {
+                text: "Sure, I'll text you when I am IDK.",
+                isCorrect: false,
+                feedback: "Incorrect. 'IDK' means 'I Don't Know'."
+              }
+            ]
+          },
+          {
+            friendMessage: "Awesome! Honestly, this school week was so exhausting with final exams.",
+            options: [
+              {
+                text: "NGL, I totally agree. I am so glad the weekend is finally here.",
+                isCorrect: true,
+                acronym: "NGL",
+                category: "emotions",
+                feedback: "Excellent! 'NGL' stands for 'Not Gonna Lie'."
+              },
+              {
+                text: "BRB, total basics. Cannot wait.",
+                isCorrect: false,
+                feedback: "Close, but 'BRB' means 'Be Right Back', which doesn't fit here."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        partner: "Harper",
+        avatar: "HP",
+        startMessage: "Did you hear the news? Taylor broke his arm and can't dance in the battle! 😱",
+        steps: [
+          {
+            friendMessage: "I thought it was a prank at first but his sister posted a photo of the cast.",
+            options: [
+              {
+                text: "No way, JK right? This is wild.",
+                isCorrect: false,
+                feedback: "'JK' means 'Just Kidding', but the friend just said it was true!"
+              },
+              {
+                text: "OMG! That is so crazy. He practiced for months!",
+                isCorrect: true,
+                acronym: "OMG",
+                category: "emotions",
+                feedback: "Correct! 'OMG' is perfect for expressing shock and surprise."
+              }
+            ]
+          },
+          {
+            friendMessage: "He must feel terrible seeing everyone else post outfit stories on Instagram.",
+            options: [
+              {
+                text: "TBH that must be really tough for him to watch.",
+                isCorrect: true,
+                acronym: "TBH",
+                category: "basics",
+                feedback: "Perfect! 'TBH' means 'To Be Honest'."
+              },
+              {
+                text: "True, he is probably experiencing BTW.",
+                isCorrect: false,
+                feedback: "'BTW' means 'By The Way', which doesn't fit the sentence."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        partner: "Jordan",
+        avatar: "JD",
+        startMessage: "Hey, are you finished writing your draft slides for our group science presentation yet?",
+        steps: [
+          {
+            friendMessage: "Our teacher said she needs the link shared in the Google folder soon so she can grade it.",
+            options: [
+              {
+                text: "I'll upload them ASAP! Just making one final tweak.",
+                isCorrect: true,
+                acronym: "ASAP",
+                category: "transitions",
+                feedback: "Correct! 'ASAP' stands for 'As Soon As Possible', showing appropriate urgency."
+              },
+              {
+                text: "I'll do it BRB.",
+                isCorrect: false,
+                feedback: "'BRB' means 'Be Right Back', but doesn't imply you are completing a project with haste."
+              }
+            ]
+          },
+          {
+            friendMessage: "Excellent. Reach out to me later tonight if you need help polishing the layout colors.",
+            options: [
+              {
+                text: "I am super busy studying RN. Let me know when you are free!",
+                isCorrect: true,
+                acronym: "RN",
+                category: "transitions",
+                feedback: "Correct! 'RN' means 'Right Now', indicating immediate action."
+              },
+              {
+                text: "Sweet, I will BTW you later when my homework is done.",
+                isCorrect: false,
+                feedback: "Oops! 'BTW' means 'By The Way' and cannot be used as a verb action."
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    let activeScenarioIdx = 0;
+    let activeChatStep = 0;
+
+    function startChatSimulation(scenarioIndex) {
+      document.getElementById('chat-setup-screen').classList.add('hidden');
+      document.getElementById('chat-interface-screen').classList.remove('hidden');
+
+      activeScenarioIdx = scenarioIndex;
+      activeChatStep = 0;
+
+      const sc = chatScenarios[scenarioIndex];
+
+      document.getElementById('chat-partner-name').innerText = sc.partner;
+      document.getElementById('chat-avatar').innerText = sc.avatar;
+
+      const chatLog = document.getElementById('chat-log');
+      chatLog.innerHTML = "";
+
+      appendChatMessage(sc.partner, sc.startMessage, false);
+      loadChatStepOptions();
+    }
+
+    function appendChatMessage(sender, text, isMe) {
+      const log = document.getElementById('chat-log');
+      const bubbleRow = document.createElement('div');
+      
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; 
+      const timeStr = `${hours}:${minutes} ${ampm}`;
+
+      if (isMe) {
+        bubbleRow.className = "self-end max-w-[85%] space-y-0.5 text-right flex flex-col items-end animate-fade-in";
+        bubbleRow.innerHTML = `
+          <div class="bg-[#d9fdd3] text-slate-800 p-2.5 px-3.5 rounded-2xl rounded-tr-none shadow-sm text-xs leading-relaxed text-left relative max-w-full">
+            <span>${text}</span>
+            <div class="flex items-center justify-end gap-1 mt-1 text-[9px] text-slate-400">
+              <span>${timeStr}</span>
+              <span class="text-[#53bdeb] font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="14" height="13" fill="currentColor" class="inline"><path fill="currentColor" d="M15.01 3.3l-1.085-1.085a.5.5 0 0 0-.707 0L6.19 9.24l-3.23-3.23a.5.5 0 0 0-.707 0L1.168 7.095a.5.5 0 0 0 0 .707l4.664 4.665a.5.5 0 0 0 .707 0l8.471-8.461a.5.5 0 0 0 0-.707zM10.2 3.28L9.112 2.195a.5.5 0 0 0-.707 0L5.3 5.3l1.085 1.085 3.822-3.805z"/></svg>
+              </span>
+            </div>
+          </div>
+        `;
+      } else {
+        const isCoach = (sender === "Learning Coach");
+        const bubbleBg = isCoach ? "bg-[#372613] text-[#ffe0b2] border border-amber-900/40" : "bg-white text-slate-800";
+        const timeColor = isCoach ? "text-amber-500/60" : "text-slate-400";
+        
+        bubbleRow.className = "self-start max-w-[85%] space-y-0.5 flex flex-col items-start";
+        bubbleRow.innerHTML = `
+          <span class="text-[9.5px] text-slate-500 font-bold tracking-wide ml-1">${sender}</span>
+          <div class="p-2.5 px-3.5 rounded-2xl rounded-tl-none text-xs leading-relaxed ${bubbleBg} relative max-w-full shadow-sm">
+            <span>${text}</span>
+            <div class="flex items-center justify-end mt-1 text-[9px] ${timeColor}">
+              <span>${timeStr}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      log.appendChild(bubbleRow);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function loadChatStepOptions() {
+      const sc = chatScenarios[activeScenarioIdx];
+      const optionsBox = document.getElementById('chat-options-box');
+      optionsBox.innerHTML = "";
+
+      if (activeChatStep >= sc.steps.length) {
+        optionsBox.innerHTML = `
+          <button onclick="exitChatSim()" class="w-full text-center py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-xs tracking-wider uppercase rounded-2xl shadow-md transition transform active:scale-95 flex items-center justify-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Complete Chat Scenario
+          </button>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      const currentStep = sc.steps[activeChatStep];
+
+      currentStep.options.forEach((opt, idx) => {
+        if (opt.isDisabled) return;
+
+        const optBtn = document.createElement('button');
+        optBtn.onclick = () => chooseChatDialogue(opt, idx);
+        optBtn.className = "w-full text-left p-3.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl transition duration-200 text-xs leading-relaxed text-slate-700 flex items-center gap-3 group shadow-sm";
+        optBtn.innerHTML = `
+          <div class="w-5 h-5 rounded-full bg-slate-100 text-[#a855f7] group-hover:bg-[#00a884] group-hover:text-white flex items-center justify-center font-bold text-[10px] shrink-0 transition">
+            ${idx + 1}
+          </div>
+          <span class="font-medium text-slate-700">${opt.text}</span>
+        `;
+        optionsBox.appendChild(optBtn);
+      });
+      lucide.createIcons();
+    }
+
+    function chooseChatDialogue(selectedOption, rawIdx) {
+      const sc = chatScenarios[activeScenarioIdx];
+      const currentStep = sc.steps[activeChatStep];
+
+      appendChatMessage("Me", selectedOption.text, true);
+
+      const optionsBox = document.getElementById('chat-options-box');
+      optionsBox.innerHTML = `
+        <div class="text-center py-2 text-slate-400 text-xs italic flex items-center justify-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]"></span>
+        </div>
+      `;
+
+      setTimeout(() => {
+        if (selectedOption.isCorrect) {
+          runAnswerCorrectCelebration(selectedOption.acronym);
+
+          activeChatStep++;
+          
+          if (activeChatStep < sc.steps.length) {
+            appendChatMessage(sc.partner, sc.steps[activeChatStep].friendMessage, false);
+          } else {
+            appendChatMessage(sc.partner, "Awesome chatting! You really know how to communicate efficiently. Catch you later! 🙌", false);
+          }
+          
+          currentStep.options.forEach(o => delete o.isDisabled);
+          loadChatStepOptions();
+        } else {
+          playTryAgainSound();
+          selectedOption.isDisabled = true;
+
+          const coachExplanation = `⚠️ TRY AGAIN: ${selectedOption.feedback} Choose another response option below.`;
+          appendChatMessage("Learning Coach", coachExplanation, false);
+          
+          loadChatStepOptions();
+        }
+      }, 1000);
+    }
+
+    function exitChatSim() {
+      chatScenarios.forEach(sc => {
+        sc.steps.forEach(st => {
+          st.options.forEach(opt => {
+            delete opt.isDisabled;
+          });
+        });
+      });
+
+      document.getElementById('chat-interface-screen').classList.add('hidden');
+      document.getElementById('chat-setup-screen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
